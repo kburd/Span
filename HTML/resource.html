@@ -1,0 +1,221 @@
+<html id = "main">
+  <head>
+  <title>Project Span</title>
+</head>
+  <body>
+    <table>
+      <tr>
+        <td>
+          <div class = "taskBar">
+            <nav  id="primary_nav_wrap">
+              <ul>
+                <li><a href="#">File</a>
+                  <ul>
+                    <li><a href="http://127.0.0.1:8080/mode=newSim">New</a></li>
+                    <li><a href="http://127.0.0.1:8080/mode=loadSim">Open</a></li>
+                    <li><a href="http://127.0.0.1:8080/mode=saveSim">Save</a></li>
+                  </ul>
+                </li>
+                <li><a href="#">Tools</a>
+                  <ul>
+                    <li><a href="#">Sub Menu 1</a></li>
+                    <li><a href="#">Sub Menu 2</a></li>
+                    <li><a href="#">Sub Menu 3</a></li>
+                    <li><a href="#">Sub Menu 4</a>
+                      <ul>
+                        <li><a href="#">Deep Menu 1</a>
+                          <ul>
+                            <li><a href="#">Sub Deep 1</a></li>
+                            <li><a href="#">Sub Deep 2</a></li>
+                            <li><a href="#">Sub Deep 3</a></li>
+                              <li><a href="#">Sub Deep 4</a></li>
+                          </ul>
+                        </li>
+                        <li><a href="#">Deep Menu 2</a></li>
+                      </ul>
+                    </li>
+                    <li><a href="#">Sub Menu 5</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class = "mainBody">
+            <div class = "info">
+              <h1 align="center">
+                <u>Generation</u>
+              </h1>
+              <p align="center">
+                <font size = "6">
+                  *generation*
+                </font>
+              </p>
+              <br><br><br>
+              <p>
+                <b>Best: </b>
+                  *best*
+              </p>
+              <p>
+                <b>Median: </b>
+                *median*
+              </p>
+              <p>
+                <b>Worst: </b>
+                *worst*
+              </p>
+              <br><br><br>
+              <button onclick="sendRequest('oneGen')" style='width:175px'>One Generation</button><br>
+              <button onclick="sendRequest('tenGen')" style='width:175px'>Ten Generations</button><br>
+              <button onclick="sendRequest('hundredGen')" style='width:175px'>Hundred Generations</button><br>
+              <button onclick="sendRequest('thousandGen')" style='width:175px'>Thousand Generations</button><br>
+            </div>
+            <div class = "cityImage" style= "padding: 0px 0px 0px 50px;">
+              <table cellpadding="0">
+                *city*
+              </table>
+            </div>
+            <div class = "legend" style = "padding: 0px 0px 0px 50px;">
+              <table>
+                <tr>
+                  <th>
+                    <p>Legend</p>
+                  </th>
+                </tr>
+                *legend*
+              </table>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class = "tools">Blah</div>
+        </td>
+      </tr>
+    </table>
+
+
+
+  </body>
+</html>
+
+<style>
+
+html{font-family:"HelveticaNeue","Helvetica Neue",Helvetica,Arial,sans-serif}
+
+button{font-family:"HelveticaNeue","Helvetica Neue",Helvetica,Arial,sans-serif}
+
+table.layout td
+{
+    padding:0px 0px 0px 0px;
+    background-color:red;
+}
+
+div.taskBar{display: table-row;}
+
+div.mainBody{display: table-row;}
+
+div.tools{display: table-row;}
+
+div.info
+{
+    vertical-align:top;
+    display: table-cell;
+}
+
+div.cityImage{display: table-cell;}
+
+div.legend
+{
+    display: table-cell;
+    vertical-align:center;
+}
+
+#primary_nav_wrap ul
+{
+	list-style:none;
+	position:relative;
+	float:left;
+	margin:0;
+	padding:0;
+}
+
+#primary_nav_wrap ul a
+{
+	display:block;
+	color:#333;
+	text-decoration:none;
+	font-weight:700;
+	font-size:12px;
+	line-height:32px;
+	padding:0 15px;
+}
+
+#primary_nav_wrap ul li
+{
+	position:relative;
+	float:left;
+	margin:0;
+	padding:0
+}
+
+#primary_nav_wrap ul li:hover
+{
+	background:#f6f6f6
+}
+
+#primary_nav_wrap ul ul
+{
+	display:none;
+	position:absolute;
+	top:100%;
+	left:0;
+	background:#fff;
+	padding:0
+}
+
+#primary_nav_wrap ul ul li
+{
+	float:none;
+	width:100px
+}
+
+#primary_nav_wrap ul ul a
+{
+	line-height:120%;
+	padding:10px 15px
+}
+
+#primary_nav_wrap ul ul ul
+{
+	top:0;
+	left:100%
+}
+
+#primary_nav_wrap ul li:hover > ul
+{
+	display:block
+}
+</style>
+
+<script>
+    window.onbeforeunload = function () {return false;}
+    function sendRequest(mode){
+        var theUrl = "http://127.0.0.1:8080/mode=" + mode;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', theUrl, true);
+        xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+        xhr.send();
+        xhr.onreadystatechange = processRequest;
+
+        function processRequest(e) {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById('main').innerHTML = xhr.responseText;
+            }
+        }
+    }
+</script>

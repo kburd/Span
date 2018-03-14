@@ -1,0 +1,40 @@
+##Config File
+#Do not change the order of variables
+
+#Sample Size
+10
+#City Size
+10
+#Mutation Rate
+1
+
+#Walking Distance
+2
+
+#Colors
+#Empty Lot Block Color
+SandyBrown
+
+#Residential Block Color
+Red
+
+#Commercial Block Color
+Blue
+
+#Industrial Block Color
+Black
+
+#Agricultural Block Color
+Green
+
+#Hospital
+Salmon
+
+#Educational
+LightBlue
+
+#Recreational
+LightGreen
+
+#Road Color
+LightGray
