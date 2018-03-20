@@ -1,3 +1,4 @@
 /venv
 .idea/
 Simulation/
+__pycache__/

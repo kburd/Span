@@ -14,19 +14,28 @@ class Zone(Enum):
     # RECREATIONAL = 7
     # ROAD = 8
     RANDOM = 4
-#
-# class Block:
-#
-#     def __init__(self):
-#
-#         self.zoning = None
 
 
-class Empty:
+class Block:
 
     def __init__(self):
 
+        self.zoning = None
+
+    def show(self):
+        raise NotImplementedError
+
+
+class Empty(Block):
+
+    def __init__(self):
+
+        super().__init__()
         self.zoning = Zone.EMPTY
+
+    def show(self):
+
+        return None
 
 
 class Industrial:
