@@ -1,8 +1,10 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from Span import *
+from Model import *
+from View import *
 
 requestString = ''
-simulator = Simulation()
+model = Model()
+view = View()
 
 def getValue(key):
 
@@ -23,74 +25,76 @@ def getValue(key):
             return tempValue
 
 
-def createGUI(city):
-
-    message = ""
-    lines = open("HTML\\resource.html", "r").readlines()
-
-    if city == None:
-
-        gen = "-"
-        worst = "-"
-        median = "-"
-        best = "-"
-        cityHTML = "<canvas id='myCanvas' width='500' height='500' style='background-color:LightGray;'>Test</canvas>"
-
-    else:
-        gen = str(simulator.generation)
-        worst = str(simulator.sampleSet[0].rating)
-        median = str(simulator.sampleSet[len(simulator.sampleSet)//2].rating)
-        best = str(simulator.sampleSet[-1].rating)
-
-        cityHTML = ""
-        blockLength = str((500-simulator.config.citySize)//city.size)
-        for row in city.layout:
-            cityHTML += "<tr>"
-            for block in row:
-                cityHTML += "<td>"
-                cityHTML += "<canvas width=" + blockLength + " height=" + blockLength +\
-                          " style='background-color:" + simulator.config.colors[block.zoning.value] + "';>Test</canvas>"
-                cityHTML += "</td>"
-            cityHTML += "</tr>"
-
-
-
-    legend = ""
-    for i in range(Zone.RANDOM.value):
-        legend += "<tr>"
-        legend += "<td><canvas id='myCanvas' width='15' height='15' style='background-color:" + \
-                  simulator.config.colors[i] + ";'>Test</canvas></td>"
-        legend += "<td>" + str(Zone(i).name) + "</td>"
-        legend += "</tr>"
-
-    for line in lines:
-        temp = line.strip()
-        if temp == "*city*":
-            message += cityHTML
-        elif temp == "*generation*":
-            message += gen
-        elif temp == "*worst*":
-            message += worst
-        elif temp == "*median*":
-            message += median
-        elif temp == "*best*":
-            message += best
-        elif temp == "*legend*":
-            message += legend
-        else:
-            message += line
-
-    return message
+# def createGUI(city):
+#
+#     message = ""
+#     lines = open("HTML\\resource.html", "r").readlines()
+#
+#     if city == None:
+#
+#         gen = "-"
+#         worst = "-"
+#         median = "-"
+#         best = "-"
+#         cityHTML = "<canvas id='myCanvas' width='500' height='500' style='background-color:LightGray;'>Test</canvas>"
+#
+#     else:
+#         gen = str(simulator.generation)
+#         worst = str(simulator.sampleSet[0].rating)
+#         median = str(simulator.sampleSet[len(simulator.sampleSet)//2].rating)
+#         best = str(simulator.sampleSet[-1].rating)
+#
+#         cityHTML = ""
+#         blockLength = str((500-simulator.config.citySize)//city.size)
+#         for row in city.layout:
+#             cityHTML += "<tr>"
+#             for block in row:
+#                 cityHTML += "<td>"
+#                 cityHTML += "<canvas width=" + blockLength + " height=" + blockLength +\
+#                           " style='background-color:" + simulator.config.colors[block.zoning.value] + "';>Test</canvas>"
+#                 cityHTML += "</td>"
+#             cityHTML += "</tr>"
+#
+#
+#
+#     legend = ""
+#     for i in range(Zone.RANDOM.value):
+#         legend += "<tr>"
+#         legend += "<td><canvas id='myCanvas' width='15' height='15' style='background-color:" + \
+#                   simulator.config.colors[i] + ";'>Test</canvas></td>"
+#         legend += "<td>" + str(Zone(i).name) + "</td>"
+#         legend += "</tr>"
+#
+#     for line in lines:
+#         temp = line.strip()
+#         if temp == "*city*":
+#             message += cityHTML
+#         elif temp == "*generation*":
+#             message += gen
+#         elif temp == "*worst*":
+#             message += worst
+#         elif temp == "*median*":
+#             message += median
+#         elif temp == "*best*":
+#             message += best
+#         elif temp == "*legend*":
+#             message += legend
+#         else:
+#             message += line
+#
+#     return message
 
 
 # HTTPRequestHandler class
+
+
 class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
     # GET
     def do_GET(self):
 
         global requestString
-        global simulator
+        global model
         requestString = self.requestline
 
         mode = getValue("mode")
@@ -100,59 +104,59 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
             message = "Hola Mundo"
 
         if mode == 'init':
-            message = createGUI(None)
+            message = view.createGUI(model)
 
         if mode == "newSim":
 
-            simulator = Simulation()
-            simulator.generate()
-            simulator.analyze()
-            simulator.sort()
-            message = createGUI(simulator.sampleSet[-1])
+            model = Model()
+            model.generate()
+            model.analyze()
+            model.sort()
+            message = view.createGUI(model)
 
         if mode == "oneGen":
-            simulator.delete()
-            simulator.mutate()
-            simulator.analyze()
-            simulator.sort()
-            simulator.generation += 1
-            message = createGUI(simulator.sampleSet[-1])
+            model.delete()
+            model.mutate()
+            model.analyze()
+            model.sort()
+            model.generation += 1
+            message = view.createGUI(model)
 
         if mode == "tenGen":
             for i in range(10):
-                simulator.delete()
-                simulator.mutate()
-                simulator.analyze()
-                simulator.sort()
-                simulator.generation += 1
-            message = createGUI(simulator.sampleSet[-1])
+                model.delete()
+                model.mutate()
+                model.analyze()
+                model.sort()
+                model.generation += 1
+            message = view.createGUI(model)
 
         if mode == "hundredGen":
             for i in range(100):
-                simulator.delete()
-                simulator.mutate()
-                simulator.analyze()
-                simulator.sort()
-                simulator.generation += 1
-            message = createGUI(simulator.sampleSet[-1])
+                model.delete()
+                model.mutate()
+                model.analyze()
+                model.sort()
+                model.generation += 1
+            message = view.createGUI(model)
 
         if mode == "thousandGen":
             for i in range(1000):
-                simulator.delete()
-                simulator.mutate()
-                simulator.analyze()
-                simulator.sort()
-                simulator.generation += 1
-            message = createGUI(simulator.sampleSet[-1])
+                model.delete()
+                model.mutate()
+                model.analyze()
+                model.sort()
+                model.generation += 1
+            message = view.createGUI(model)
 
-        if mode == "viewWorst":
-            message = createGUI(simulator.sampleSet[0])
-
-        if mode == "viewMedian":
-            message = createGUI(simulator.sampleSet[len(simulator.sampleSet)//2])
-
-        if mode == "viewBest":
-            message = createGUI(simulator.sampleSet[-1])
+        # if mode == "viewWorst":
+        #     message = view.createGUI(model)
+        #
+        # if mode == "viewMedian":
+        #     message = view.createGUI(model.sampleSet[len(model.sampleSet) // 2])
+        #
+        # if mode == "viewBest":
+        #     message = view.createGUI(model.sampleSet[-1])
 
         # Send response status code
         self.send_response(200)
@@ -175,7 +179,7 @@ def run():
     # Choose port 8080, for port 80, which is normally used for a http server, you need root access
     server_address = ('0.0.0.0', 8080)
     httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
-    print('running server...')
+    print('Running Span...')
     httpd.serve_forever()
 
 
