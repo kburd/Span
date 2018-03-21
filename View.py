@@ -1,14 +1,18 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from Model import Zone
+from Configuration import *
+
 
 class View:
+
+    def __init__(self):
+
+        self.config = Configuration()
 
     def createGUI(self, simulator):
 
         message = ""
         lines = open("HTML\\resource.html", "r").readlines()
 
-        if simulator.sampleSet == []:
+        if simulator == None:
 
             gen = "-"
             worst = "-"
@@ -37,11 +41,12 @@ class View:
                     cityHTML += "</td>"
                 cityHTML += "</tr>"
 
+
         legend = ""
         for i in range(Zone.RANDOM.value):
             legend += "<tr>"
             legend += "<td><canvas id='myCanvas' width='15' height='15' style='background-color:" + \
-                      simulator.config.colors[i] + ";'>Test</canvas></td>"
+                      self.config.colors[i] + ";'>Test</canvas></td>"
             legend += "<td>" + str(Zone(i).name) + "</td>"
             legend += "</tr>"
 

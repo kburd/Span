@@ -2,11 +2,10 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from Model import *
 from View import *
 
-requestString = ''
-model = Model()
+model = None
 view = View()
 
-def getValue(key):
+def getValue(key, requestString):
 
     paramString = requestString.split(" ")[1].strip("/")
     pairs = paramString.split("&")
@@ -25,79 +24,15 @@ def getValue(key):
             return tempValue
 
 
-# def createGUI(city):
-#
-#     message = ""
-#     lines = open("HTML\\resource.html", "r").readlines()
-#
-#     if city == None:
-#
-#         gen = "-"
-#         worst = "-"
-#         median = "-"
-#         best = "-"
-#         cityHTML = "<canvas id='myCanvas' width='500' height='500' style='background-color:LightGray;'>Test</canvas>"
-#
-#     else:
-#         gen = str(simulator.generation)
-#         worst = str(simulator.sampleSet[0].rating)
-#         median = str(simulator.sampleSet[len(simulator.sampleSet)//2].rating)
-#         best = str(simulator.sampleSet[-1].rating)
-#
-#         cityHTML = ""
-#         blockLength = str((500-simulator.config.citySize)//city.size)
-#         for row in city.layout:
-#             cityHTML += "<tr>"
-#             for block in row:
-#                 cityHTML += "<td>"
-#                 cityHTML += "<canvas width=" + blockLength + " height=" + blockLength +\
-#                           " style='background-color:" + simulator.config.colors[block.zoning.value] + "';>Test</canvas>"
-#                 cityHTML += "</td>"
-#             cityHTML += "</tr>"
-#
-#
-#
-#     legend = ""
-#     for i in range(Zone.RANDOM.value):
-#         legend += "<tr>"
-#         legend += "<td><canvas id='myCanvas' width='15' height='15' style='background-color:" + \
-#                   simulator.config.colors[i] + ";'>Test</canvas></td>"
-#         legend += "<td>" + str(Zone(i).name) + "</td>"
-#         legend += "</tr>"
-#
-#     for line in lines:
-#         temp = line.strip()
-#         if temp == "*city*":
-#             message += cityHTML
-#         elif temp == "*generation*":
-#             message += gen
-#         elif temp == "*worst*":
-#             message += worst
-#         elif temp == "*median*":
-#             message += median
-#         elif temp == "*best*":
-#             message += best
-#         elif temp == "*legend*":
-#             message += legend
-#         else:
-#             message += line
-#
-#     return message
-
-
-# HTTPRequestHandler class
-
-
 class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
     # GET
     def do_GET(self):
 
-        global requestString
         global model
-        requestString = self.requestline
+        global view
 
-        mode = getValue("mode")
+        mode = getValue("mode", self.requestline)
         message = format("%s is not a mode") % mode
 
         if mode == "echo":
@@ -109,6 +44,8 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
         if mode == "newSim":
 
             model = Model()
+            view = View()
+
             model.generate()
             model.analyze()
             model.sort()
