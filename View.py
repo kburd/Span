@@ -1,4 +1,4 @@
-from Configuration import *
+from City import *
 
 
 class View:

@@ -1,5 +1,38 @@
-from Zones import Zone
 from random import randint
+from enum import Enum
+
+
+class Zone(Enum):
+
+    EMPTY = 0
+    RESIDENTIAL = 1
+    COMMERCIAL = 2
+    INDUSTRIAL = 3
+    # AGRICULTURAL = 4
+    # HOSPITAL = 5
+    # EDUCATIONAL = 6
+    # RECREATIONAL = 7
+    # ROAD = 8
+    RANDOM = 4
+
+
+class Score:
+
+    def __init__(self):
+
+        self.pollution = 0
+        self.commerce = 0
+        self.food = 0
+
+    def __add__(self, other):
+
+        newScore = Score()
+
+        newScore.pollution = self.pollution + other.pollution
+        newScore.commerce = self.commerce + other.commerce
+        newScore.food = self.food + other.food
+
+        return newScore
 
 
 class Block:
@@ -7,9 +40,10 @@ class Block:
     def __init__(self):
 
         self.zoning = None
+        self.score = Score()
 
-    def show(self):
-        raise NotImplementedError
+    # def show(self):
+    #     raise NotImplementedError
 
 
 class Empty(Block):
@@ -47,12 +81,11 @@ class Commercial:
 
 class City:
 
-    def __init__(self, size, id):
+    def __init__(self, size):
 
         self.layout = []
         self.size = size
         self.rating = 0
-        self.id = str(id)
 
         for i in range(size):
 
@@ -123,28 +156,106 @@ class City:
 
         return neighborhood
 
-    def save(self, dir):
+    def analyze(self, config):
 
-        string = ""
+        score = 0
 
-        for row in self.layout:
+        for i in range(self.size):
+            for j in range(self.size):
 
-            for block in row:
+                blockZone = self.getBlock(i, j).zoning
+                blockScore = 0
+                scoreRemoval = False
 
-                string += str(block.zoning.value) + ","
+                if blockZone == Zone.RESIDENTIAL:
 
-            string += "\n"
+                    neighborhood = self.getSurrondingBlocks(i, j, config.walkingDistance)
 
-        open(dir + "\\" + self.id + ".txt", "w").write(string)
+                    for neighbor in neighborhood:
 
-    def load(self):
+                        if neighbor.zoning == Zone.COMMERCIAL:
+                            blockScore += 1
 
-        rawText = open(self.id + ".txt", 'r').readlines()
+                    neighborhood = self.getSurrondingBlocks(i, j, 1)
 
-        for i in range(len(rawText)):
+                    for neighbor in neighborhood:
 
-            row = rawText[i].strip(",\n").split(",")
+                        if neighbor.zoning == Zone.INDUSTRIAL:
+                            scoreRemoval = True
 
-            for j in range(len(row)):
 
-                self.layout[i][j] = Block(Zone(int(row[j])))
+
+                # elif blockZone == Zone.COMMERCIAL:
+                #
+                #     neighborhood = self.getSurrondingBlocks(i, j, simulator.walkingDistance)
+                #
+                #     for neighbor in neighborhood:
+                #
+                #         if neighbor.zoning == Zone.COMMERCIAL:
+                #             blockScore -= 1
+
+                elif blockZone == Zone.INDUSTRIAL:
+
+                    if i == 0 or j == 0 or i == self.size - 1 or j == self.size - 1:
+                        blockScore = 10
+
+                    else:
+                        scoreRemoval = True
+
+                if scoreRemoval:
+                    blockScore = 0
+
+                score += blockScore
+
+        self.rating = score
+
+    # def save(self, dir):
+    #
+    #     string = ""
+    #
+    #     for row in self.layout:
+    #
+    #         for block in row:
+    #
+    #             string += str(block.zoning.value) + ","
+    #
+    #         string += "\n"
+    #
+    #     open(dir + "\\" + self.id + ".txt", "w").write(string)
+    #
+    # def load(self):
+    #
+    #     rawText = open(self.id + ".txt", 'r').readlines()
+    #
+    #     for i in range(len(rawText)):
+    #
+    #         row = rawText[i].strip(",\n").split(",")
+    #
+    #         for j in range(len(row)):
+    #
+    #             self.layout[i][j] = Block(Zone(int(row[j])))
+
+
+class Configuration:
+
+    def __init__(self):
+
+        configFile = open("config.txt", 'r')
+        rawData = configFile.readlines()
+
+        data = []
+        for line in rawData:
+
+            if line[0] != "#" and line[0] != "\n":
+                data += [line.strip("\n")]
+
+        self.sampleSize = int(data[0])
+        self.citySize = int(data[1])
+        self.mutationThreshold = int(data[2])
+
+        self.walkingDistance = int(data[3])
+
+        numOfZones = Zone.RANDOM.value
+        self.colors = []
+        for i in range(numOfZones):
+            self.colors += [data[4 + i]]

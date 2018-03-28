@@ -9,7 +9,7 @@
 1
 
 #Walking Distance
-2
+1
 
 #Colors
 #Empty Lot Block Color
