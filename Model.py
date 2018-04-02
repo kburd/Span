@@ -48,24 +48,32 @@ class Model:
 
                     fatherBlock = fatherCity.getBlock(j, k)
                     motherBlock = motherCity.getBlock(j, k)
+                    childZone = None
 
                     if fatherBlock.zoning == motherBlock.zoning:
-                        childCity.setBlock(j, k, fatherBlock.zoning)
+                        childZone = fatherBlock.zoning
 
                     else:
                         parent = randint(1, 2)
-                        #print(parent)
 
                         if parent == 1:
-                            childCity.setBlock(j, k, fatherBlock.zoning)
+                            childZone = fatherBlock.zoning
                         else:
-                            childCity.setBlock(j, k, motherBlock.zoning)
+                            childZone = motherBlock.zoning
+
+
+                    mutationChance = randint(0, 100)
+
+                    if mutationChance < self.config.mutationThreshold:
+
+                        childZone = Zone.RANDOM
+
+                    childCity.setBlock(j, k, childZone)
 
             newSampleSet += [self.sampleSet[i]]
             newSampleSet += [childCity]
 
         self.sampleSet = newSampleSet
-        print(len(self.sampleSet))
 
     # def saveSimulation(self):
     #
