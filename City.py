@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, choice
 from enum import Enum
 
 

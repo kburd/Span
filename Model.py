@@ -36,29 +36,36 @@ class Model:
 
         newSampleSet = []
 
-        for oldCity in self.sampleSet:
+        for i in range(len(self.sampleSet)):
 
-            newCity = City(self.config.citySize)
+            fatherCity = choice(self.sampleSet)
+            motherCity = choice(self.sampleSet)
 
-            for i in range(self.config.citySize):
-                for j in range(self.config.citySize):
+            childCity = City(self.config.citySize)
 
-                    oldBlock = oldCity.getBlock(i, j)
+            for j in range(self.config.citySize):
+                for k in range(self.config.citySize):
 
-                    chance = randint(0, 100)
+                    fatherBlock = fatherCity.getBlock(j, k)
+                    motherBlock = motherCity.getBlock(j, k)
 
-                    if chance < self.config.mutationThreshold:
-
-                        newCity.setBlock(i, j, Zone.RANDOM)
+                    if fatherBlock.zoning == motherBlock.zoning:
+                        childCity.setBlock(j, k, fatherBlock.zoning)
 
                     else:
+                        parent = randint(1, 2)
+                        #print(parent)
 
-                        newCity.setBlock(i, j, oldBlock.zoning)
+                        if parent == 1:
+                            childCity.setBlock(j, k, fatherBlock.zoning)
+                        else:
+                            childCity.setBlock(j, k, motherBlock.zoning)
 
-            newSampleSet += [oldCity]
-            newSampleSet += [newCity]
+            newSampleSet += [self.sampleSet[i]]
+            newSampleSet += [childCity]
 
         self.sampleSet = newSampleSet
+        print(len(self.sampleSet))
 
     # def saveSimulation(self):
     #
