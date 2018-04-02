@@ -6,7 +6,7 @@
 #City Size
 10
 #Mutation Rate
-1
+10
 
 #Walking Distance
 1

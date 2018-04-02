@@ -1,7 +1,7 @@
 from Model import *
 
 
-def autoRun(maxRating, saveLocation):
+def autoRun(saveLocation):
 
     file = open(saveLocation, "a")
 
@@ -11,7 +11,7 @@ def autoRun(maxRating, saveLocation):
     model.analyze()
     model.sort()
 
-    while model.sampleSet[-1].rating != maxRating:
+    while 1000 >= model.generation:
 
         model.delete()
         model.mutate()
@@ -19,18 +19,20 @@ def autoRun(maxRating, saveLocation):
         model.sort()
         model.generation += 1
 
-    file.write(str(model.generation) + "\n")
+    file.write(str(model.sampleSet[-1].rating) + "\n")
     file.close()
 
-    return model.generation
+    return model.sampleSet[-1].rating
 
 
-# for i in range(10):
-#     result = autoRun(492, "testResults.txt")
-#     print(i+1, result, sep=": ")
+filename = "Test\\gradientResults.txt"
+
+for i in range(10):
+    result = autoRun(filename)
+    print(i+1, result, sep=": ")
 
 
-file = open("testResults.txt")
+file = open(filename)
 lines = file.read().split("\n")
 del lines[-1]
 

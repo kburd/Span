@@ -1,4 +1,5 @@
 from City import *
+import math
 
 
 class Model:
@@ -35,6 +36,9 @@ class Model:
     def mutate(self):
 
         newSampleSet = []
+        self.config.mutationThreshold = (self.sampleSet[-1].rating/492)**-3
+        #print(self.config.mutationThreshold)
+        #self.config.mutationThreshold = 10
 
         for oldCity in self.sampleSet:
 
@@ -45,7 +49,7 @@ class Model:
 
                     oldBlock = oldCity.getBlock(i, j)
 
-                    chance = randint(0, 100)
+                    chance = randint(0, 500)
 
                     if chance < self.config.mutationThreshold:
 
